@@ -21,12 +21,10 @@ The environment variables can be used to enable or disable usage of `ccache` and
 
 Remember to set your desired amount of space used for `ccache` when in the container, eg. `ccache -M 20G`.
 
-`xxd` is provided by `toybox`. So before running anything requiring `xxd` (like `script/release.sh`), alias it: `alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"`
-
 ## Building the image
 
 ```shell
-sudo docker-compose build
+UID=${UID} GID=${GID} sudo --preserve-env=UID,GID docker-compose build
 ```
 
 ## Running the image
@@ -34,12 +32,12 @@ sudo docker-compose build
 `$UID` and `$GID` are used to keep permissions in line with your current user (and to avoid running everything as `root`, even inside a somewhat contained environment.)
 
 ```shell
-UID=${UID} GID=${GID} sudo --preserve-env=UID,GID docker-compose run --rm aosp /bin/bash
+UID=${UID} GID=${GID} sudo --preserve-env=UID,GID docker-compose run --rm aosp
 ```
 
 # Known issues
 
-Currently, the container has to be run with `--privileged` (or rather `privileged: true` in the `docker-compose.yml`), as otherwise `nsjail` will complain.
+Currently, the container has to be run with `--privileged` (or rather `privileged: true` in the `docker-compose.yml`), as otherwise `nsjail` will complain. (Seems like even this still doesn't work sufficiently. Hrmpf.)
 
 See:
 

@@ -1,19 +1,30 @@
-FROM ubuntu:19.04
+FROM archlinux/base
+
+ARG local_gid
+ARG local_uid
 
 WORKDIR /aosp/
 ENV PATH="/android_build/bin:${PATH}"
 
-RUN apt-get update && \
-    apt-get install -y git-core libc6-dev zip curl zlib1g-dev libc6-dev-i386 lib32ncurses5-dev lib32z-dev x11proto-core-dev libx11-dev libxml2-utils xsltproc unzip python && \
+RUN groupadd -g $local_gid local && \
+    useradd -m -s /bin/bash -r -u $local_uid -g $local_gid local
+
+# xorgproto libx11
+RUN pacman --noconfirm --needed -Syu \
+    git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
+    python python2 python2-virtualenv python-protobuf ccache wget openssl m4 && \
     mkdir -p /android_build/bin && \
     curl https://storage.googleapis.com/git-repo-downloads/repo > /android_build/bin/repo && \
     chmod a+x /android_build/bin/repo && \
-    rm -rf /var/cache/apt && \
-    rm -rf /var/lib/apt/lists
+    rm -rf /var/cache/pacman/pkg/* && \
+    rm -rf /var/lib/pacman/sync/*.db
 
-RUN apt-get update && \
-    apt-get install -y bc ccache python-protobuf wget libssl-dev && \
-    rm -rf /var/cache/apt && \
-    rm -rf /var/lib/apt/lists
+USER local
 
-ENTRYPOINT [ "sh", "-c" ]
+RUN cd /home/local && \
+    virtualenv2 --system-site-packages aospenv && \
+    touch ~/.bashrc && \
+    echo 'alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"' >> ~/.bashrc && \
+    echo 'source ~/aospenv/bin/activate' >> ~/.bashrc
+
+ENTRYPOINT [ "bash" ]
