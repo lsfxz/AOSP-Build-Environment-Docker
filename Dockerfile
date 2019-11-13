@@ -1,6 +1,6 @@
-FROM ubuntu:16.04
+FROM ubuntu:19.04
 
-WORKDIR /root/
+WORKDIR /aosp/
 ENV PATH="/android_build/bin:${PATH}"
 
 RUN apt-get update && \
@@ -8,11 +8,11 @@ RUN apt-get update && \
     mkdir -p /android_build/bin && \
     curl https://storage.googleapis.com/git-repo-downloads/repo > /android_build/bin/repo && \
     chmod a+x /android_build/bin/repo && \
-    rm -rf /var/cahce/apt && \
+    rm -rf /var/cache/apt && \
     rm -rf /var/lib/apt/lists
 
 RUN apt-get update && \
-    apt-get install -y bc imagemagick ccache schedtool && \
+    apt-get install -y bc imagemagick ccache schedtool python-protobuf vim wget libssl-dev && \
     rm -rf /var/cache/apt && \
     rm -rf /var/lib/apt/lists
 

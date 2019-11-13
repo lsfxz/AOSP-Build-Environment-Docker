@@ -1,0 +1,20 @@
+version: '3'
+services:
+  aosp:
+    build:
+      context: ./
+    container_name: aosp
+    user: "${UID}:${GID}"
+    # security_opt:
+      # - seccomp:unconfined
+    privileged: true
+    volumes:
+      - ./path/to/your/build/folder:/aosp
+      - ./path/to/somewhere:/ccache
+      - ./path/to/somewhere/else:/tmpdir
+    environment:
+      - TMPDIR=/tmpdir
+      - USE_CCACHE=1
+      - CCACHE_EXEC=/usr/bin/ccache
+      - CCACHE_DIR=/ccache
+      - ANDROID_JACK_VM_ARGS=-Xmx8g -Dfile.encoding=UTF-8 -XX:+TieredCompilation

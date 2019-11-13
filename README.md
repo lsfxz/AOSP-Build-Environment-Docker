@@ -1,48 +1,46 @@
-[![Docker Automated build](https://img.shields.io/docker/automated/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment)
-[![Docker Build Status](https://img.shields.io/docker/build/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment)
-[![Docker Pulls](https://img.shields.io/docker/pulls/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment/)
-[![Image Layers](https://img.shields.io/microbadger/layers/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment/)
-[![Image Size](https://img.shields.io/microbadger/image-size/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment/)
-[![Docker Stars](https://img.shields.io/docker/stars/thnuiwelr/aosp-build-environment.svg)](https://hub.docker.com/r/thnuiwelr/aosp-build-environment/)
+# AOSP build environment in Docker
+A easy to use AOSP build environment provided as a Docker image.
 
-
-# AOSP build environment on Docker
-A easy to use AOSP build environment as a Docker image.
-
-# Things to remember
-This is an image which provides a **build environment** (includes any tools required for building AOSP), you should use it as a shell, then do anything you wanted. It isn't a wrapper for `Repo`, `Make` or something else.
+**This is forked from [Trumeet/AOSP-Build-Environment-Docker](https://github.com/Trumeet/AOSP-Build-Environment-Docker) and somewhat "streamlined" with a
+focus on building [GrapheneOS](https://grapheneos.org/).**
 
 # Usage
-Use it as a independent shell, and mount a local path to save source and result:
+
+## Notes
+
+The `docker-compose.yml` and thus `docker-compose` is used to simplify handling mounts and environment variables.
+
+You can customize some options in the `docker-compose.yml` to your liking:
+
+The mounted volumes are used to provide outside access to your build dir (the `/aosp`-mount), as well as separate `TMP`- and `CCACHE`-directories.
+Those might come in handy if your `/tmp` runs out of space at some point, or if you want to use `ccache` to save some time on subsequent builds.
+
+The environment variables can be used to enable or disable usage of `ccache` and the `$TMPDIR`, as well as to provide custom args to `jack`.
+
+## Building the image
+
 ```shell
-$ docker run --rm -it \
-  -v path/to/your/source/folder:/root \ # /root is reccomanded because it's the workdir
-  thnuiwelr/aosp-build-environment bash
+sudo docker-compose build
 ```
-Once you entered the shell, you can start building from [Downloading the Source#Initializing a Repo client](https://source.android.com/setup/build/downloading), every tools required is ready.
 
-You can let it run in background as well, just add your own command and `-d` option:
+## Running the image
+
+`$UID` and `$GID` are used to keep permissions in line with your current user (and to avoid running everything as `root`, even inside a somewhat contained environment.)
+
 ```shell
-$ docker run --rm -it \
-  -v path/to/your/source/folder:/root \ # /root is reccomanded because it's the workdir
-  -d 
-  thnuiwelr/aosp-build-environment "repo --help" # Will be wrapped as "sh -c repo --help"
+UID=${UID} GID=${GID} sudo --preserve-env=UID,GID docker-compose run --rm aosp /bin/bash
 ```
-Running in background is pretty useful in long time buildings.
 
-## Building custom ROMs
+# Known issues
 
-Some custom ROMs require extra packages to build. Here are the packages I included in the build:
+Currently, the container has to be run with `--privileged` (or rather `privileged: true` in the `docker-compose.yml`), as otherwise `nsjail` will complain.
 
-* bc
+See:
 
-* imagemagick
+* https://www.google.com/url?q=https://github.com/google/nsjail%23launching-in-docker
+* https://issuetracker.google.com/issues/123210688
 
-* ccache
-
-* schedtool
-
-These packages are included into the image directly.
+It might be possible to work around this with appropriate `seccomp` options.
 
 # License
 GPL v3, feel free to contribute it.
