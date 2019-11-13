@@ -1,4 +1,5 @@
 # AOSP build environment in Docker
+
 A easy to use AOSP build environment provided as a Docker image.
 
 **This is forked from [Trumeet/AOSP-Build-Environment-Docker](https://github.com/Trumeet/AOSP-Build-Environment-Docker) and somewhat "streamlined" with a
@@ -8,6 +9,7 @@ focus on building [GrapheneOS](https://grapheneos.org/).**
 
 ## Notes
 
+
 The `docker-compose.yml` and thus `docker-compose` is used to simplify handling mounts and environment variables.
 
 You can customize some options in the `docker-compose.yml` to your liking:
@@ -16,6 +18,8 @@ The mounted volumes are used to provide outside access to your build dir (the `/
 Those might come in handy if your `/tmp` runs out of space at some point, or if you want to use `ccache` to save some time on subsequent builds.
 
 The environment variables can be used to enable or disable usage of `ccache` and the `$TMPDIR`, as well as to provide custom args to `jack`.
+
+Remember to set your desired amount of space used for `ccache` when in the container, eg. `ccache -M 20G`.
 
 ## Building the image
 
