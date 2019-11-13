@@ -1,5 +1,7 @@
 FROM archlinux/base
 
+COPY ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz /
+
 ARG local_gid
 ARG local_uid
 
@@ -13,6 +15,8 @@ RUN groupadd -g $local_gid local && \
 RUN pacman --noconfirm --needed -Syu \
     git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
     python python2 python2-virtualenv python-protobuf ccache wget openssl m4 && \
+    pacman --noconfirm -U /ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz && \
+    rm -rf /ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz && \
     mkdir -p /android_build/bin && \
     curl https://storage.googleapis.com/git-repo-downloads/repo > /android_build/bin/repo && \
     chmod a+x /android_build/bin/repo && \
