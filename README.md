@@ -21,6 +21,8 @@ The environment variables can be used to enable or disable usage of `ccache` and
 
 Remember to set your desired amount of space used for `ccache` when in the container, eg. `ccache -M 20G`.
 
+`xxd` is provided by `toybox`. So before running anything requiring `xxd` (like `script/release.sh`), alias it: `alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"`
+
 ## Building the image
 
 ```shell
