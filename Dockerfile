@@ -1,7 +1,5 @@
 FROM archlinux/base
 
-COPY ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz /
-
 ARG local_gid
 ARG local_uid
 
@@ -14,9 +12,15 @@ RUN groupadd -g $local_gid local && \
 # xorgproto libx11
 RUN pacman --noconfirm --needed -Syu \
     git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
-    python python2 python2-virtualenv python-protobuf ccache wget openssl m4 && \
-    pacman --noconfirm -U /ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz && \
-    rm -rf /ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz && \
+    python python2 python2-virtualenv python-protobuf wget openssl m4 && \
+    # until https://github.com/ccache/ccache/issues/489 is fixed:
+    pacman --noconfirm -U https://archive.archlinux.org/packages/c/ccache-3.7.4-1-x86_64.pkg.tar.xz && \
+    # otherwise, we would have to build from the AUR to provide libncurses.so.5:
+    pacman-key --init && pacman-key --populate &&\
+    pacman-key -r 83F817213361BF5F02E7E124F9F9FA97A403F63E && \
+    pacman -U  --noconfirm https://repo.archlinuxcn.org/x86_64/archlinuxcn-keyring-20191029-1-any.pkg.tar.xz && \
+    pacman-key -u && \
+    pacman --noconfirm -U https://repo.archlinuxcn.org/x86_64/ncurses5-compat-libs-6.1-1-x86_64.pkg.tar.xz && \
     mkdir -p /android_build/bin && \
     curl https://storage.googleapis.com/git-repo-downloads/repo > /android_build/bin/repo && \
     chmod a+x /android_build/bin/repo && \
@@ -29,6 +33,6 @@ RUN cd /home/local && \
     virtualenv2 --system-site-packages aospenv && \
     touch ~/.bashrc && \
     echo 'alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"' >> ~/.bashrc && \
-    echo 'source ~/aospenv/bin/activate' >> ~/.bashrc
+    echo '#source ~/aospenv/bin/activate' >> ~/.bashrc
 
 ENTRYPOINT [ "bash" ]
