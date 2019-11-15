@@ -9,10 +9,9 @@ ENV PATH="/android_build/bin:${PATH}"
 RUN groupadd -g $local_gid local && \
     useradd -m -s /bin/bash -r -u $local_uid -g $local_gid local
 
-# xorgproto libx11
 RUN pacman --noconfirm --needed -Syu \
     git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
-    python python2 python2-virtualenv python-protobuf wget openssl m4 && \
+    python python2 freetype2 python-protobuf wget openssl m4 && \
     # until https://github.com/ccache/ccache/issues/489 is fixed:
     pacman --noconfirm -U https://archive.archlinux.org/packages/c/ccache-3.7.4-1-x86_64.pkg.tar.xz && \
     # otherwise, we would have to build from the AUR to provide libncurses.so.5:
@@ -30,9 +29,9 @@ RUN pacman --noconfirm --needed -Syu \
 USER local
 
 RUN cd /home/local && \
-    virtualenv2 --system-site-packages aospenv && \
+    # virtualenv2 --system-site-packages aospenv && \
     touch ~/.bashrc && \
-    echo 'alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"' >> ~/.bashrc && \
-    echo '#source ~/aospenv/bin/activate' >> ~/.bashrc
+    echo 'alias xxd="prebuilts/build-tools/linux-x86/bin/toybox xxd"' >> ~/.bashrc
+    # echo '#source ~/aospenv/bin/activate' >> ~/.bashrc
 
 ENTRYPOINT [ "bash" ]
