@@ -11,7 +11,7 @@ RUN groupadd -g $local_gid local && \
 
 RUN pacman --noconfirm --needed -Syu \
     git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
-    python python2 freetype2 python-protobuf wget openssl m4 && \
+    python python2 freetype2 ttf-dejavu python-protobuf wget openssl m4 && \
     # until https://github.com/ccache/ccache/issues/489 is fixed:
     pacman --noconfirm -U https://archive.archlinux.org/packages/c/ccache-3.7.4-1-x86_64.pkg.tar.xz && \
     # otherwise, we would have to build from the AUR to provide libncurses.so.5:
