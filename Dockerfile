@@ -14,7 +14,7 @@ RUN pacman --noconfirm --needed -Syu \
     git glibc zip unzip curl  libxml2 libxslt gawk which procps-ng diffutils \
     python2 freetype2 ttf-dejavu wget openssl m4 rsync \
     # you can omit those if you don't want to extract the vendor files in the container:
-    perl python2-protobuf \
+    perl python2-protobuf tar \
     # you can omit those if you don't want to run script/release.sh in the container:
     python python-protobuf vim \
     # you can omit those if you don't want to build the kernel inside the container:
