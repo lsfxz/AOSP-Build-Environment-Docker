@@ -46,7 +46,5 @@ See:
 
 It might be possible to work around this with appropriate `seccomp` options.
 
-Also we have to provide an older version of `ccache` until [this issue](https://github.com/ccache/ccache/issues/489) gets fixed, probably in 3.7.6.
-
 # License
 GPL v3, feel free to contribute it.

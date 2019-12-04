@@ -17,10 +17,10 @@ RUN pacman --noconfirm --needed -Syu \
     perl python2-protobuf tar \
     # you can omit those if you don't want to run script/release.sh in the container:
     python python-protobuf vim \
+    # ccache:
+    ccache \
     # you can omit those if you don't want to build the kernel inside the container:
     bc gcc && \
-    # until https://github.com/ccache/ccache/issues/489 is fixed:
-    pacman --noconfirm -U https://archive.archlinux.org/packages/c/ccache-3.7.4-1-x86_64.pkg.tar.xz && \
     # otherwise, we would have to build from the AUR to provide libncurses.so.5:
     pacman-key --init && pacman-key --populate &&\
     pacman-key -r 83F817213361BF5F02E7E124F9F9FA97A403F63E && \
